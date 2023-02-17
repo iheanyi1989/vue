@@ -46,6 +46,11 @@ Resources:
       AccessToken: "{{resolve:secretsmanager:vuecfncodepipeline}}"
       BuildSpec: |-
         version: 0.1
+        backend:
+          phases:
+            build:
+              commands:
+                - amplifyPush --simple
         frontend:
           phases:
             build:

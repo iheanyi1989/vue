@@ -71,7 +71,7 @@ Resources:
             files:
               - '*'
       CustomRules:
-        - Source: /dist/vue.min.js
+        - Source: /dist/vue.min.js #vuegh\dist\vue.min.js
           Target: /vue.min.js
           Status: "200"
       Tags:

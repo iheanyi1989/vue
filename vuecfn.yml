@@ -5,7 +5,7 @@ Parameters:
     Type: String
     Description: GitHub Repository URL
 
-  OauthToken:
+  AccessToken:
     Type: String
     Description: GitHub Repository URL
     NoEcho: true
@@ -42,7 +42,7 @@ Resources:
       Name: TodoApp
       Repository: !Ref Repository
       Description: Todo example app Test Pipeline
-      OauthToken: !Ref OauthToken
+      AccessToken: !Ref AccessToken
       BuildSpec: |-
         version: 0.1
         frontend:

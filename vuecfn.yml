@@ -25,15 +25,25 @@ Resources:
             Principal:
               Service:
                 - amplify.amazonaws.com
+                - cloudformation.amazonaws.com
             Action:
               - sts:AssumeRole
+      # Policies:
+      #   - PolicyName: Amplify
+      #     PolicyDocument:
+      #       Version: 2012-10-17
+      #       Statement:
+      #         - Effect: Allow
+      #           Action: "amplify:*"
+      #           Resource: "*"
+
       Policies:
-        - PolicyName: Amplify
+        - PolicyName: Justfortesting
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: "amplify:*"
+                Action: "*"
                 Resource: "*"
 
   AmplifyApp:

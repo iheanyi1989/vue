@@ -41,7 +41,7 @@ Resources:
     Properties:
       Name: TodoApp
       Repository: !Ref Repository
-      Description: Todo example app
+      Description: Todo example app Test Pipeline
       OauthToken: !Ref OauthToken
       BuildSpec: |-
         version: 0.1

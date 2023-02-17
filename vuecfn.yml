@@ -42,7 +42,8 @@ Resources:
       Name: TodoApp2
       Repository: !Ref Repository
       Description: Todo example app Test Pipeline
-      AccessToken: !Ref AccessToken
+      # AccessToken: !Ref AccessToken
+      AccessToken: { { resolve:secretsmanager:vuecfncodepipeline } }
       BuildSpec: |-
         version: 0.1
         frontend:

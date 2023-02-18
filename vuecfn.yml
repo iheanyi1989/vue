@@ -56,11 +56,11 @@ Resources:
       AccessToken: "{{resolve:secretsmanager:vuecfncodepipeline}}"
       BuildSpec: |-
         version: 0.1
-        backend:
-          phases:
-            build:
-              commands:
-                - amplifyPush --simple
+        # backend:
+        #   phases:
+        #     build:
+        #       commands:
+        #         - amplifyPush --simple
         frontend:
           phases:
             build:
@@ -71,7 +71,7 @@ Resources:
             files:
               - '*'
       CustomRules:
-        - Source: /dist/vue.min.js #vuegh\dist\vue.min.js
+        - Source: /dist/vue.min.js
           Target: /vue.min.js
           Status: "200"
       Tags:

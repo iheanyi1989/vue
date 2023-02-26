@@ -14,6 +14,10 @@ Parameters:
     Type: String
     Description: Domain name to host application
 
+  BranchName:
+    Type: String
+    Description: The branch to build from
+
 Resources:
   AmplifyRole:
     Type: AWS::IAM::Role
@@ -82,15 +86,15 @@ Resources:
   AmplifyBranch:
     Type: AWS::Amplify::Branch
     Properties:
-      BranchName: "feature/dev"
+      BranchName: !Ref BranchName
       AppId: !GetAtt AmplifyApp.AppId
-      Description: Feature/dev Branch
+      Description: Amplify app testing
       EnableAutoBuild: true
       Tags:
         - Key: Name
           Value: todo-feature
         - Key: Branch
-          Value: feature/dev
+          Value: !Ref BranchName
 
   AmplifyDomain:
     Type: AWS::Amplify::Domain

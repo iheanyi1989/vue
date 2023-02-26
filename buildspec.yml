@@ -1,0 +1,18 @@
+version: 0.2
+env:
+  variables:
+    REPOSITORY: https://github.com/iheanyi1989/vue
+    REGION: us-east-1
+    DOMAIN: info.diasporabro.com
+    BRANCHNAME: feature/dev
+
+phases:
+  build:
+    commands:
+      - echo "Running CloudFormation Deploy.."
+      - aws cloudformation deploy --template-file ./vuecfn.yml --stack-name testcodebuildvuecfn --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Domain=$DOMAIN Repository=$REPOSITORY BranchName=$BRANCHNAME
+      - echo "Done."
+artifacts:
+  files:
+    - packaged.yml
+    - parameters/*.json

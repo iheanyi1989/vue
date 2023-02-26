@@ -18,18 +18,8 @@ You are looking at the repository for Vue 2. The repo for Vue 3 is [vuejs/core](
 Vue.js is an MIT-licensed open source project with its ongoing development made possible entirely by the support of these awesome [backers](https://github.com/vuejs/core/blob/main/BACKERS.md). If you'd like to join them, please consider [ sponsor Vue's development](https://vuejs.org/sponsor/).
 
 <p align="center">
-  <h3 align="center">Special Sponsor</h3>
-</p>
-
-<p align="center">
-  <a target="_blank" href="https://github.com/appwrite/appwrite">
-  <img alt="special sponsor appwrite" src="https://sponsors.vuejs.org/images/appwrite.svg" width="300">
-  </a>
-</p>
-
-<p align="center">
-  <a target="_blank" href="https://vuejs.org/sponsor/">
-    <img alt="sponsors" src="https://sponsors.vuejs.org/sponsors.svg?v2">
+  <a target="_blank" href="https://vuejs.org/sponsor/#current-sponsors">
+    <img alt="sponsors" src="https://sponsors.vuejs.org/sponsors.svg">
   </a>
 </p>
 
@@ -83,7 +73,7 @@ Vue.js supports all browsers that are [ES5-compliant](https://kangax.github.io/c
 
 ## Documentation
 
-To check out [live examples](https://v2.vuejs.org/v2/examples/) and docs, visit [vuejs.org](https://v2.vuejs.org).
+To check out [live examples](https://vuejs.org/v2/examples/) and docs, visit [vuejs.org](https://vuejs.org).
 
 ## Questions
 

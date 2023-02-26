@@ -10,7 +10,7 @@ phases:
   build:
     commands:
       - echo "Running CloudFormation Deploy.."
-      - aws cloudformation deploy --template-file ./vuecfn.yml --stack-name testcodebuildvuecfn --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Domain=$DOMAIN Repository=$REPOSITORY BranchName=$BRANCH_NAME
+      - aws cloudformation deploy --template-file ./vuecfn.yml --stack-name testcodebuildvuecfn --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Domain=$DOMAIN Repository=$REPOSITORY BranchName=$BRANCHNAME
       - echo "Done."
 artifacts:
   files:

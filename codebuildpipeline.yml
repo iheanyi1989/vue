@@ -1,0 +1,214 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  # Account Id of the deployment target.
+  TargetAccountID:
+    Description: Account ID of the target account where the deployment will happen.
+    Type: String
+    Default: 971201534179
+    ConstraintDescription: Must be a valid AWS Account ID without hyphens.
+    AllowedPattern: '\d{12}'
+    MinLength: 12
+    MaxLength: 12
+  # Cross Account Role to be assumed by code pipeline to carry out deployment
+  CodePipelineAssumeRoleName:
+    Type: String
+    Description: Cross Account Role to be assumed by code pipeline to carry out deployment
+    Default: cross-account-role-serverless-deployment
+  # Cloudformation Service Role to create serverless resources
+  CFExecutionRoleName:
+    Type: String
+    Description: Cross Account Role to be assumed by Cloudformation Service to create serverless resources
+    Default: cf-execution-role-serverless
+  # Source Code Repository for pipeline
+  # CodeCommitRepoName:
+  #   Type: String
+  #   Description: Enter the name of code commit repo.
+  #   Default: my-serverless-api
+  # # Source Code Branch for pipeline
+  # CodeCommitRepoBranch:
+  #   Type: String
+  #   Description: Enter the branch name of code commit repo.
+  #   Default: master
+  #   AllowedValues:
+  #     - develop
+  #     - release
+  #     - master
+  # # Deployment Target Environment
+  # DeploymentEnvironment:
+  #   Type: String
+  #   Description: Select name of the environment to which the pipeline is deploying.
+  #   Default: DEV
+  #   AllowedValues:
+  #     - DEV
+  #     - STAGE
+  #     - PROD
+Resources:
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: codebuildservicerol-infra-account
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+
+  CodeBuildServiceRolePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Policy for CodebuildService role
+      ManagedPolicyName: codebuildservicerolepolicymanaged
+      Roles:
+        - !Ref CodeBuildServiceRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: CloudWatchLogsPolicy
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
+          - Sid: CodeCommitPolicy
+            Effect: Allow
+            Action:
+              - codecommit:GitPull
+            Resource: "*"
+          - Sid: S3GetObjectPolicy
+            Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:GetObjectVersion
+            Resource: "*"
+          - Sid: S3PutObjectPolicy
+            Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: "*"
+          - Sid: S3BucketIdentity
+            Effect: Allow
+            Action:
+              - s3:GetBucketAcl
+              - s3:GetBucketLocation
+            Resource: "*"
+          - Sid: CloudFormationFullAccess
+            Effect: Allow
+            Action:
+              - cloudformation:*
+            Resource: "*"
+
+          - Sid: IAMRolesPermissions
+            # Needed for creating Roles for Lambdas, EC2 instances and other services
+            Effect: Allow
+            Action:
+              - iam:Get*
+              - iam:List*
+              - iam:*Role*
+              - iam:CreatePolicy
+              - iam:DeletePolicy
+              - iam:*PolicyVersion*
+              - iam:*InstanceProfile*
+            Resource: "*"
+
+          - Sid: Stmt1677438856920
+            Action: secretsmanager:*
+            Effect: Allow
+            Resource: "*"
+
+          - Sid: Stmt1677439426217
+            Action: amplify:*
+            Effect: Allow
+            Resource: "*"
+
+          - Sid: AllowCodebuildAssumeCrossAccountRole
+            Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Resource: arn:aws:iam::971201534179:role/cross-account-role-serverless-deployment
+
+  CodebuildSourceCredential:
+    Type: AWS::CodeBuild::SourceCredential
+    Properties:
+      ServerType: GITHUB
+      Token: "{{resolve:secretsmanager:vuecfncodepipeline}}"
+      AuthType: PERSONAL_ACCESS_TOKEN
+
+  CodebuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref "AWS::StackName"
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        Type: GITHUB
+        Location: https://github.com/iheanyi1989/vue.git
+        BuildSpec: buildspec.yml
+        Auth:
+          Type: OAUTH
+          Resource: !Ref CodebuildSourceCredential
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: "PULL_REQUEST_CREATED, PULL_REQUEST_UPDATED"
+            - Type: BASE_REF #  Works with pull request events only.
+              Pattern: !Sub ^refs/heads/feature/cd$
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        EnvironmentVariables:
+          - Name: REPOSITORY
+            Type: PLAINTEXT
+            Value: https://github.com/iheanyi1989/vue"
+          - Name: DOMAIN
+            Type: PLAINTEXT
+            Value: info.diasporabo.com
+          - Name: BRANCHNAME
+            Type: PLAINTEXT
+            Value: feature/dev
+
+  CodebuildProjectDeployTargetAccount:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: codbuildtargetaccountdeploy
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        Type: GITHUB
+        Location: https://github.com/iheanyi1989/vue.git
+        BuildSpec: devbuildspec.yml
+        Auth:
+          Type: OAUTH
+          Resource: !Ref CodebuildSourceCredential
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: "PULL_REQUEST_MERGED"
+            - Type: BASE_REF #  Works with pull request events only.
+              Pattern: !Sub ^refs/heads/feature/cd$
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        EnvironmentVariables:
+          - Name: CROSS_ACCOUNT_ROLE
+            Type: PLAINTEXT
+            Value: !Sub "arn:aws:iam::${TargetAccountID}:role/${CodePipelineAssumeRoleName}"
+          - Name: CF_EXECUTION_ROLE
+            Type: PLAINTEXT
+            Value: !Sub "arn:aws:iam::${TargetAccountID}:role/${CFExecutionRoleName}"
+          - Name: TARGET_ACCOUNT_ID
+            Type: PLAINTEXT
+            Value: !Ref TargetAccountID
+          # -
+          #   Name: STAGE
+          #   Type: PLAINTEXT
+          #   Value: !Ref DeploymentEnvironment

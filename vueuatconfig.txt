@@ -1,7 +1,7 @@
-{
-    "Parameters": {
+[
+    {
         "Repository": "https://github.com/iheanyi1989/vue",
         "Domain": "info.diasporabro.com",
         "BranchName": "feature/uat"
     }
-}
+]

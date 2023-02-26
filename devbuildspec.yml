@@ -16,7 +16,7 @@ phases:
       - chmod +x cross-account-setup.sh
   build:
     commands:
-      - echo "Running CloudFormation Deploy  To Target account.."
+      - echo "Running CloudFormation Deploy.."
       - cd $CODEBUILD_SRC_DIR
       - . /.cross-account-setup.sh
       - >

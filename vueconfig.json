@@ -1,6 +1,7 @@
 {
     "Parameters": {
         "Repository": "https://github.com/iheanyi1989/vue",
-        "Domain": "info.diasporabro.com"
+        "Domain": "info.diasporabro.com",
+        "BranchName": "feature/dev"
     }
 }

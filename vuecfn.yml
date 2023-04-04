@@ -53,7 +53,7 @@ Resources:
   AmplifyApp:
     Type: "AWS::Amplify::App"
     Properties:
-      Name: TodoApp2
+      Name: TodoAppTest
       Repository: !Ref Repository
       Description: Todo example app Test Pipeline
       # AccessToken: !Ref AccessToken

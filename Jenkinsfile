@@ -77,6 +77,7 @@ pipeline {
     stage ('Slack Notification for QA Deploy') {
       steps {
         echo "deployed to QA Env successfully"
+        echo 'test'
         slackSend(channel:'devops-training', message: "Job is successful, here is the info - Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
       }
     }  

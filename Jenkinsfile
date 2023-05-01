@@ -16,7 +16,7 @@ pipeline {
         echo 'Check if the commit message is "TEST-123'
         sh 'if [ "$GIT_COMMIT_MSG" == "TEST-123" ]; then
         echo "Commit message is 'TEST-123', proceeding with the build"
-            else echo "Commit message is not 'TEST-123', aborting the build"
+            else echo "Commit message is not 'TEST-123', aborting the buildd"
     exit 1
             fi'
         

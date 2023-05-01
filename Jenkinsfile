@@ -35,7 +35,7 @@ pipeline {
         stage('Your Job') {
             steps {
                 echo 'Executing the main job'
-                // Place your job steps here
+                echo 'Test Success'
             }
         }
     }

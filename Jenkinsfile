@@ -7,14 +7,19 @@ pipeline {
   stages {
     stage ('Build') {
       steps {
-      sh 'mvn clean install -f MyWebApp/pom.xml'
+      echo 'Get Git commit mesage'
+      sh 'GIT_COMMIT_MSG=$(git log -1 --pretty=format:"%s")'
       }
     }
     stage ('Code Quality') {
       steps {
-        withSonarQubeEnv('SonarQube') {
-        sh 'mvn -f MyWebApp/pom.xml sonar:sonar'
-        }
+        echo 'Check if the commit message is "TEST-123'
+        sh 'if [ "$GIT_COMMIT_MSG" == "TEST-123" ]; then
+        echo "Commit message is 'TEST-123', proceeding with the build"
+            else echo "Commit message is not 'TEST-123', aborting the build"
+    exit 1
+            fi'
+        
       }
     }
     stage ('JaCoCo') {
@@ -77,7 +82,7 @@ pipeline {
     stage ('Slack Notification for QA Deploy') {
       steps {
         echo "deployed to QA Env successfully"
-        echo 'test'
+        echo
         slackSend(channel:'devops-training', message: "Job is successful, here is the info - Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
       }
     }  

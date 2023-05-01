@@ -13,8 +13,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    def scmVars = checkout scm
-                    GIT_COMMIT_MSG = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                    checkout scm
+                    GIT_COMMIT_MSG = sh(script: 'git log -1 --pretty=format:"%s"', returnStdout: true).trim()
                 }
             }
         }
@@ -35,8 +35,7 @@ pipeline {
         stage('Your Job') {
             steps {
                 echo 'Executing the main job'
-                echo 'Working - TEST 123'
-                // Place your job steps here ok
+                // Place your job steps here
             }
         }
     }

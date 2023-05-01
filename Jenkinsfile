@@ -5,16 +5,21 @@ pipeline {
         GIT_COMMIT_MSG = ""
     }
 
+    options {
+        skipDefaultCheckout()
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh '''
-                    GIT_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-                    echo "GIT_COMMIT_MSG=$GIT_COMMIT_MSG" > commit_msg.env
-                '''
+            }
+        }
+
+        stage('Get Commit Message') {
+            steps {
                 script {
-                    env.GIT_COMMIT_MSG = readFile('commit_msg.env').trim().split('=')[1]
+                    env.GIT_COMMIT_MSG = sh(script: 'git log -1 --pretty=format:"%s"', returnStdout: true).trim()
                 }
             }
         }

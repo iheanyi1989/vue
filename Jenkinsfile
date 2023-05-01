@@ -1,24 +1,25 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_COMMIT_MSG = ""
-    }
+    // environment {
+    //     GIT_COMMIT_MSG = ""
+    // }
 
-    options {
-        skipDefaultCheckout()
-    }
+    // options {
+    //     skipDefaultCheckout()
+    // }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         checkout scm
+        //     }
+        // }
 
         stage('Get Commit Message') {
             steps {
                 script {
+                    echo 'Getting Commit message'
                     env.GIT_COMMIT_MSG = sh(script: 'git log -1 --pretty=format:"%s"', returnStdout: true).trim()
                 }
             }

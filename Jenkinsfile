@@ -5,10 +5,6 @@ pipeline {
         GIT_COMMIT_MSG = ""
     }
 
-    options {
-        skipDefaultCheckout()
-    }
-
     stages {
         stage('Checkout') {
             steps {

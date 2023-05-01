@@ -36,7 +36,7 @@ pipeline {
             steps {
                 echo 'Executing the main job'
                 echo 'Working - TEST 123'
-                // Place your job steps here
+                // Place your job steps here ok
             }
         }
     }
